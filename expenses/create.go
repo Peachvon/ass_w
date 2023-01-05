@@ -3,9 +3,9 @@ package expenses
 import (
 	"fmt"
 	"net/http"
-	"strings"
 
 	"github.com/labstack/echo/v4"
+	"github.com/lib/pq"
 )
 
 func CreateExpenses(c echo.Context) error {
@@ -14,8 +14,7 @@ func CreateExpenses(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
-	tags := "{" + strings.Join(exp.Tags, ",") + "}"
-	row := db.QueryRow("INSERT INTO expenses (title, amount,note,tags) values ($1, $2,$3,$4) RETURNING id", exp.Title, exp.Amount, exp.Note, tags)
+	row := db.QueryRow("INSERT INTO expenses (title, amount,note,tags) values ($1, $2,$3,$4) RETURNING id", exp.Title, exp.Amount, exp.Note, pq.Array(&exp.Tags))
 	err = row.Scan(&exp.ID)
 	if err != nil {
 		fmt.Println("can't scan id", err)

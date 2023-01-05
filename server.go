@@ -31,6 +31,13 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+		if username == "peachvon" && password == "2023" {
+			return true, nil
+		}
+		return false, nil
+
+	}))
 
 	e.POST("/expenses", expenses.CreateExpenses)
 	expenses.InitDB()

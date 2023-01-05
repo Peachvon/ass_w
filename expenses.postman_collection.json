@@ -55,7 +55,7 @@
 					"raw": "{\n    \"title\": \"strawberry smoothie\",\n    \"amount\": 79,\n    \"note\": \"night market promotion discount 10 bath\", \n    \"tags\": [\"food\", \"beverage\"]\n}"
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses",
+					"raw": "{{DOMAINNAME}}:2565/expenses",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -117,7 +117,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses/{{LATEST_EXPENSED_ID}}",
+					"raw": "{{DOMAINNAME}}:2565/expenses/{{LATEST_EXPENSED_ID}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -177,7 +177,7 @@
 					"raw": "{\n    \"id\": {{LATEST_EXPENSED_ID}},\n    \"title\": \"apple smoothie\",\n    \"amount\": 89,\n    \"note\": \"no discount\",\n    \"tags\": [\"beverage\"]\n}"
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses/{{LATEST_EXPENSED_ID}}",
+					"raw": "{{DOMAINNAME}}:2565/expenses/{{LATEST_EXPENSED_ID}}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -237,7 +237,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses",
+					"raw": "{{DOMAINNAME}}:2565/expenses",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -288,7 +288,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses",
+					"raw": "{{DOMAINNAME}}:2565/expenses",
 					"protocol": "http",
 					"host": [
 						"localhost"
