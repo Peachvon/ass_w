@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
@@ -28,23 +32,17 @@ type Err struct {
 
 func createExpenses(c echo.Context) error {
 	var exp Expenses
-
 	err := c.Bind(&exp)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
-
 	tags := "{" + strings.Join(exp.Tags, ",") + "}"
-
-	//return c.JSON(http.StatusBadRequest, exp)
 	row := db.QueryRow("INSERT INTO expenses (title, amount,note,tags) values ($1, $2,$3,$4) RETURNING id", exp.Title, exp.Amount, exp.Note, tags)
-
 	err = row.Scan(&exp.ID)
 	if err != nil {
 		fmt.Println("can't scan id", err)
 		return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan user:" + err.Error()})
 	}
-
 	fmt.Println("insert todo success id : ", exp)
 	return c.JSON(http.StatusCreated, exp)
 
@@ -92,11 +90,23 @@ func main() {
 	fmt.Println("create table success")
 
 	e.POST("/expenses", createExpenses)
-	// e.POST("/users", createUserHandler)
-	// e.GET("/users", getUsersHandler)
-	// e.GET("/users/:id", getUserHandler)
 
-	log.Fatal(e.Start(os.Getenv("PORT")))
-	fmt.Println("Please use server.go for main file")
-	fmt.Println("start at port:", os.Getenv("PORT"))
+	go func() {
+		err := e.Start(os.Getenv("PORT"))
+		if err != nil && err != http.ErrServerClosed {
+			e.Logger.Fatal("shutting down the server")
+		}
+
+	}()
+	shutdown := make(chan os.Signal, 1)
+
+	signal.Notify(shutdown, os.Interrupt, syscall.SIGTERM)
+
+	<-shutdown
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	fmt.Println("shutdown. . .")
+	if err := e.Shutdown(ctx); err != nil {
+		fmt.Println("shutdown err:", err)
+	}
 }
