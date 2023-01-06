@@ -18,6 +18,9 @@ func InitDB() {
 	if err != nil {
 		log.Fatal("Connect to database error", err)
 	}
+	CreateTableExpenses(db)
+}
+func CreateTableExpenses(db *sql.DB) error {
 
 	createTb := `
 	CREATE TABLE IF NOT EXISTS expenses (
@@ -28,11 +31,13 @@ func InitDB() {
 		tags TEXT[]
 	);
 	`
-	_, err = db.Exec(createTb)
+	_, err := db.Exec(createTb)
 
 	if err != nil {
 		log.Fatal("can't create table", err)
 	}
 
 	fmt.Println("create table success")
+
+	return nil
 }
