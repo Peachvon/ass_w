@@ -58,6 +58,7 @@ func main() {
 	// }))
 	expense.InitDB()
 	e.POST("/expenses", expense.CreateExpenseHandler)
+	e.GET("/expenses/:id", expense.GetExpenseHandler)
 
 	go func() {
 		err := e.Start(os.Getenv("PORT"))
