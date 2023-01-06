@@ -59,6 +59,7 @@ func main() {
 	expense.InitDB()
 	e.POST("/expenses", expense.CreateExpenseHandler)
 	e.GET("/expenses/:id", expense.GetExpenseHandler)
+	e.GET("/expenses", AuthMiddleware(expense.GetExpensesHandler))
 	e.PUT("/expenses/:id", expense.PutExpenseHandler)
 
 	go func() {
