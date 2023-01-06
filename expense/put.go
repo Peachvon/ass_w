@@ -44,7 +44,7 @@ func PutExpenseHandler(c echo.Context) error {
 
 func PutExpense(db *sql.DB, id string, exp Expense) error {
 
-	stmt, err := db.Prepare("UPDATE expenses SET title=$2 ,amount=$3,note=$4,tags=$5 WHERE id=$1 RETURNING id,title, amount,note,tags")
+	stmt, err := db.Prepare("UPDATE expenses SET title=$2 ,amount=$3,note=$4,tags=$5 WHERE id=$1")
 	if err != nil {
 		return errors.New("can't query sql: " + err.Error())
 
