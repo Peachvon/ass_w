@@ -2,6 +2,7 @@ package expense
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -13,15 +14,15 @@ func CreateExpenseHandler(c echo.Context) error {
 	var exp Expense
 	err := c.Bind(&exp)
 	if err != nil {
+
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
 	result, err := CreateExpense(db, exp)
 	if err != nil {
 
-		return c.JSON(http.StatusInternalServerError, Err{Message: "can't scan user:" + err.Error()})
+		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 
 	}
-	fmt.Println("insert todo success id : ", exp)
 	return c.JSON(http.StatusCreated, result)
 
 }
@@ -34,7 +35,7 @@ func CreateExpense(db *sql.DB, exp Expense) (Expense, error) {
 	err := row.Scan(&result.ID, &result.Title, &result.Amount, &result.Note, pq.Array(&result.Tags))
 	if err != nil {
 		fmt.Println("can't scan id", err)
-		return exp, err
+		return exp, errors.New("can't scan id")
 	}
 	return result, nil
 }

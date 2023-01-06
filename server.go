@@ -10,12 +10,30 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/Peachvon/assessment/expenses"
+	"github.com/Peachvon/assessment/expense"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
 )
+
+func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		u, p, ok := c.Request().BasicAuth()
+		if !ok {
+
+			return c.JSON(http.StatusUnauthorized, expense.Err{Message: "Unauthorized"})
+		}
+
+		if u != "peachvon" || p != "20232566" {
+
+			return c.JSON(http.StatusUnauthorized, expense.Err{Message: "Unauthorized"})
+		}
+
+		next(c)
+		return nil
+	}
+}
 
 func init() {
 
@@ -31,16 +49,16 @@ func main() {
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
-		if username == "peachvon" && password == "2023" {
-			return true, nil
-		}
-		return false, nil
+	// e.Use(middleware.BasicAuth(func(username, password string, c echo.Context) (bool, error) {
+	// 	if username == "peachvon" && password == "20232566" {
+	// 		return true, nil
+	// 	}
+	// 	return false, nil
 
-	}))
+	// }))
+	expense.InitDB()
+	e.POST("/expenses", expense.CreateExpenseHandler)
 
-	e.POST("/expenses", expenses.CreateExpenses)
-	expenses.InitDB()
 	go func() {
 		err := e.Start(os.Getenv("PORT"))
 		if err != nil && err != http.ErrServerClosed {
