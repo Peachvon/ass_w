@@ -6,12 +6,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"testing"
 
+	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -73,6 +75,17 @@ func TestIntegrationCreateExpense(t *testing.T) {
 	assert.Equal(t, []string{"food", "beverage"}, exp.Tags)
 
 }
+func TestIntegrationGetAllExpenses(t *testing.T) {
+	seedExpense(t)
+	var exps []Expense
+
+	res := request(http.MethodGet, uri("expenses"), nil)
+	err := res.Decode(&exps)
+
+	assert.Nil(t, err)
+	assert.EqualValues(t, http.StatusOK, res.StatusCode)
+	assert.Greater(t, len(exps), 0)
+}
 func TestIntegrationGetExpenseById(t *testing.T) {
 	c := seedExpense(t)
 
@@ -122,4 +135,13 @@ func request(method, url string, body io.Reader) *Response {
 	client := http.Client{}
 	res, err := client.Do(req)
 	return &Response{res, err}
+}
+
+func init() {
+
+	err := godotenv.Load("../.env")
+
+	if err != nil {
+		log.Fatal("error file .env")
+	}
 }
