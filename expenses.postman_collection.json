@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "837100f7-a3cb-4b5b-ba0b-5ab3488067e0",
+		"_postman_id": "abc5a2c4-2b05-4a27-a534-dd3284f794d0",
 		"name": "expenses",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "14595617"
+		"_exporter_id": "19107776"
 	},
 	"item": [
 		{
@@ -55,10 +55,9 @@
 					"raw": "{\n    \"title\": \"strawberry smoothie\",\n    \"amount\": 79,\n    \"note\": \"night market promotion discount 10 bath\", \n    \"tags\": [\"food\", \"beverage\"]\n}"
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses",
-					"protocol": "http",
+					"raw": "{{DOMAINNAME}}:2565/expenses",
 					"host": [
-						"localhost"
+						"{{DOMAINNAME}}"
 					],
 					"port": "2565",
 					"path": [
@@ -117,10 +116,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses/{{LATEST_EXPENSED_ID}}",
-					"protocol": "http",
+					"raw": "{{DOMAINNAME}}:2565/expenses/{{LATEST_EXPENSED_ID}}",
 					"host": [
-						"localhost"
+						"{{DOMAINNAME}}"
 					],
 					"port": "2565",
 					"path": [
@@ -177,10 +175,9 @@
 					"raw": "{\n    \"id\": {{LATEST_EXPENSED_ID}},\n    \"title\": \"apple smoothie\",\n    \"amount\": 89,\n    \"note\": \"no discount\",\n    \"tags\": [\"beverage\"]\n}"
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses/{{LATEST_EXPENSED_ID}}",
-					"protocol": "http",
+					"raw": "{{DOMAINNAME}}:2565/expenses/{{LATEST_EXPENSED_ID}}",
 					"host": [
-						"localhost"
+						"{{DOMAINNAME}}"
 					],
 					"port": "2565",
 					"path": [
@@ -218,6 +215,9 @@
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "noauth"
+				},
 				"method": "GET",
 				"header": [
 					{
@@ -237,10 +237,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses",
-					"protocol": "http",
+					"raw": "{{DOMAINNAME}}:2565/expenses",
 					"host": [
-						"localhost"
+						"{{DOMAINNAME}}"
 					],
 					"port": "2565",
 					"path": [
@@ -269,6 +268,21 @@
 				"disableBodyPruning": true
 			},
 			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "{{AUTH_PASSWORD}}",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "{{AUTH_USERNAME}}",
+							"type": "string"
+						}
+					]
+				},
 				"method": "GET",
 				"header": [
 					{
@@ -288,10 +302,9 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:2565/expenses",
-					"protocol": "http",
+					"raw": "{{DOMAINNAME}}:2565/expenses",
 					"host": [
-						"localhost"
+						"{{DOMAINNAME}}"
 					],
 					"port": "2565",
 					"path": [
@@ -300,6 +313,46 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "DOMAINNAME",
+			"value": "http//:localhost"
+		},
+		{
+			"key": "LATEST_EXPENSED_ID",
+			"value": "2"
+		},
+		{
+			"key": "AUTH_USERNAME",
+			"value": "peachvon",
+			"type": "string"
+		},
+		{
+			"key": "AUTH_PASSWORD",
+			"value": "20232566",
+			"type": "string"
 		}
 	]
 }
