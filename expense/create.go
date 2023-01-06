@@ -39,9 +39,3 @@ func CreateExpense(db *sql.DB, exp Expense) (Expense, error) {
 	}
 	return result, nil
 }
-
-type User struct {
-	ID   int
-	Name string
-	Age  int
-}
