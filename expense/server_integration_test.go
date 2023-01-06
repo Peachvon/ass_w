@@ -5,7 +5,6 @@ package expense
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -21,6 +20,30 @@ type Response struct {
 	err error
 }
 
+func TestIntegrationPutExpense(t *testing.T) {
+	c := seedExpense(t)
+	var latest Expense
+
+	body := bytes.NewBufferString(`{
+		"id":` + strconv.Itoa(c.ID) + `,
+		"title": "apple smoothie",
+    "amount": 89,
+    "note": "no discount",
+    "tags": ["beverage"]
+	}`)
+
+	res := request(http.MethodPut, uri("expenses", strconv.Itoa(c.ID)), body)
+
+	err := res.Decode(&latest)
+	assert.Nil(t, err)
+	assert.Equal(t, http.StatusOK, res.StatusCode)
+	assert.Equal(t, c.ID, latest.ID)
+	assert.NotEmpty(t, latest.Tags)
+	assert.NotEmpty(t, latest.Amount)
+	assert.NotEmpty(t, latest.Note)
+	assert.NotEmpty(t, latest.Tags)
+}
+
 func (r *Response) Decode(v interface{}) error {
 	if r.err != nil {
 		return r.err
@@ -28,6 +51,7 @@ func (r *Response) Decode(v interface{}) error {
 
 	return json.NewDecoder(r.Body).Decode(v)
 }
+
 func TestIntegrationCreateExpense(t *testing.T) {
 	body := bytes.NewBufferString(`{
 		"title": "strawberry smoothie",
@@ -97,6 +121,5 @@ func request(method, url string, body io.Reader) *Response {
 	req.Header.Add("Content-Type", "application/json")
 	client := http.Client{}
 	res, err := client.Do(req)
-	fmt.Println(os.Getenv("AUTH_TOKEN"))
 	return &Response{res, err}
 }
