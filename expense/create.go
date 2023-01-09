@@ -10,14 +10,14 @@ import (
 	"github.com/lib/pq"
 )
 
-func CreateExpenseHandler(c echo.Context) error {
+func (h *handler) CreateExpenseHandler(c echo.Context) error {
 	var exp Expense
 	err := c.Bind(&exp)
 	if err != nil {
 
 		return c.JSON(http.StatusBadRequest, Err{Message: err.Error()})
 	}
-	result, err := CreateExpense(db, exp)
+	result, err := CreateExpense(h.DB, exp)
 	if err != nil {
 
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
@@ -28,6 +28,7 @@ func CreateExpenseHandler(c echo.Context) error {
 }
 
 func CreateExpense(db *sql.DB, exp Expense) (Expense, error) {
+	fmt.Println("peachvontestnaja")
 
 	row := db.QueryRow("INSERT INTO expenses (title, amount,note,tags) values ($1, $2,$3,$4) RETURNING id,title, amount,note,tags", exp.Title, exp.Amount, exp.Note, pq.Array(&exp.Tags))
 

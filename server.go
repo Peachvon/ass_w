@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -45,7 +46,11 @@ func init() {
 }
 
 func main() {
-
+	connStr := os.Getenv("DATABASE_URL")
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal(err)
+	}
 	e := echo.New()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
@@ -56,11 +61,12 @@ func main() {
 	// 	return false, nil
 
 	// }))
+	h := expense.NewApplication(db)
 	expense.InitDB()
-	e.POST("/expenses", expense.CreateExpenseHandler)
-	e.GET("/expenses/:id", expense.GetExpenseHandler)
-	e.GET("/expenses", AuthMiddleware(expense.GetExpensesHandler))
-	e.PUT("/expenses/:id", expense.PutExpenseHandler)
+	e.POST("/expenses", h.CreateExpenseHandler)
+	e.GET("/expenses/:id", h.GetExpenseHandler)
+	e.GET("/expenses", AuthMiddleware(h.GetExpensesHandler))
+	e.PUT("/expenses/:id", h.PutExpenseHandler)
 
 	go func() {
 		err := e.Start(os.Getenv("PORT"))

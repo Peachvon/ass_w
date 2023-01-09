@@ -10,9 +10,9 @@ import (
 	"github.com/lib/pq"
 )
 
-func GetExpenseHandler(c echo.Context) error {
+func (h *handler) GetExpenseHandler(c echo.Context) error {
 	id := c.Param("id")
-	exp, err := GetExpense(db, id)
+	exp, err := GetExpense(DB, id)
 	if err != nil {
 
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
@@ -38,8 +38,8 @@ func GetExpense(db *sql.DB, id string) (Expense, error) {
 	return result, nil
 }
 
-func GetExpensesHandler(c echo.Context) error {
-	exps, err := GetExpenses(db)
+func (h *handler) GetExpensesHandler(c echo.Context) error {
+	exps, err := GetExpenses(DB)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}

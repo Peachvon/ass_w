@@ -19,7 +19,7 @@ func CheckIdRequest(ParamId, JsonId string) error {
 	return nil
 }
 
-func PutExpenseHandler(c echo.Context) error {
+func (h *handler) PutExpenseHandler(c echo.Context) error {
 	id := c.Param("id")
 	var exp Expense
 
@@ -34,11 +34,12 @@ func PutExpenseHandler(c echo.Context) error {
 
 	}
 
-	err = PutExpense(db, id, exp)
+	err = PutExpense(DB, id, exp)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, Err{Message: err.Error()})
 	}
-	GetExpenseHandler(c)
+
+	h.GetExpenseHandler(c)
 	return nil
 
 }

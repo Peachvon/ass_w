@@ -9,16 +9,18 @@ import (
 	_ "github.com/lib/pq"
 )
 
-var db *sql.DB
+var DB *sql.DB
 
 func InitDB() {
 	url := os.Getenv("DATABASE_URL")
 	var err error
-	db, err = sql.Open("postgres", url)
+	DB, err = sql.Open("postgres", url)
+
 	if err != nil {
 		log.Fatal("Connect to database error", err)
 	}
-	CreateTableExpenses(db)
+	defer DB.Close()
+	CreateTableExpenses(DB)
 }
 func CreateTableExpenses(db *sql.DB) error {
 
